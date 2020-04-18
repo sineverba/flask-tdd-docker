@@ -37,6 +37,19 @@ $ docker-compose exec users python manage.py seed_db
 $ docker-compose exec users python -m pytest "project/tests"
 ```
 
+##### Heroku main commands
++ Build the image
+
+`$ docker build -f Dockerfile.prod -t registry.heroku.com/<app_name>/web .`
+
++ Push the image
+
+`$ docker push registry.heroku.com/<app_name>/web:latest`
+
++ Spin the image
+
+`$ heroku container:release web -a <app_name>`
+
 ### Save requirements
 
 `(env) $ pip freeze > requirements.txt`
