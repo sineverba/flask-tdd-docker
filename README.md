@@ -24,7 +24,14 @@ $ docker-compose up -d
 
 ```
 
-#### Launch test
+#### Create and seed the database
+
+```
+$ docker-compose exec users python manage.py recreate_db
+$ docker-compose exec users python manage.py seed_db
+```
+
+#### Run test
 
 ``` bash
 $ docker-compose exec users python -m pytest "project/tests"
