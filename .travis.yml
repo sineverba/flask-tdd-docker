@@ -1,4 +1,6 @@
-sudo: required
+dist: bionic
+
+os: linux
 
 language: python
 
@@ -30,9 +32,10 @@ script:
   - docker-compose exec users python -m pytest "project/tests" --cov="project"
   - docker-compose exec users black project
   - docker-compose exec users flake8 project
+  
 
 after_success:
-  - coveralls
+  - coveralls -d coverage.xml
 
 after_script:
   - docker-compose down
