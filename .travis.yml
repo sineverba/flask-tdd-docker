@@ -22,9 +22,12 @@ before_script:
   - docker-compose up -d --build
 
 script:
-  - docker-compose exec users python -m pytest "project/tests"
+  - docker-compose exec users python -m pytest "project/tests" --cov="project"
   - docker-compose exec users black project
   - docker-compose exec users flake8 project
+
+after_success:
+  - coveralls
 
 after_script:
   - docker-compose down
