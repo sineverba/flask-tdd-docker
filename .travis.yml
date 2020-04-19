@@ -1,4 +1,8 @@
-sudo: required
+dist: bionic
+
+os: linux
+
+language: python
 
 services:
   - docker
@@ -22,9 +26,13 @@ before_script:
   - docker-compose up -d --build
 
 script:
-  - docker-compose exec users python -m pytest "project/tests"
+  - docker-compose exec users python -m pytest "project/tests" --cov="project"
   - docker-compose exec users black project
   - docker-compose exec users flake8 project
+  
+
+after_success:
+  - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
 
 after_script:
   - docker-compose down
