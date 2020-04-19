@@ -32,7 +32,7 @@ script:
   
 
 after_success:
-  - docker-compose exec -e TRAVIS TRAVIS_JOB_ID TRAVIS_BRANCH TRAVIS_PULL_REQUEST exec users coveralls
+  - docker-compose exec -e TRAVIS TRAVIS_JOB_ID TRAVIS_BRANCH TRAVIS_PULL_REQUEST users coveralls
 
 after_script:
   - docker-compose down
