@@ -29,7 +29,7 @@ before_script:
   - docker-compose up -d --build
 
 script:
-  - docker-compose exec users python -m pytest "project/tests" --cov="project" --cov-report xml
+  - docker-compose exec users python -m pytest "project/tests" --cov="project" --cov-report=xml
   - docker-compose exec users black project
   - docker-compose exec users flake8 project
   
