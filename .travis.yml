@@ -32,11 +32,7 @@ script:
   
 
 after_success:
-  - docker-compose -e TRAVIS=$TRAVIS \
-  -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID \
-  -e TRAVIS_BRANCH=$TRAVIS_BRANCH \
-  -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST \
-  exec users coveralls
+  - docker-compose exec -e TRAVIS TRAVIS_JOB_ID TRAVIS_BRANCH TRAVIS_PULL_REQUEST exec users coveralls
 
 after_script:
   - docker-compose down
