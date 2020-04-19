@@ -1,3 +1,8 @@
+# Flask TDD + Docker
+
+[![Build Status](https://travis-ci.com/sineverba/flask-tdd-docker.svg?branch=master)](https://travis-ci.com/sineverba/flask-tdd-docker)
+
+
 ## Setup dependencies
 
 ``` bash
