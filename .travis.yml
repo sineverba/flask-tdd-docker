@@ -23,6 +23,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
+  - rm Dockerfile
+  - cp Dockerfile.travis Dockerfile
+  - rm Dockerfile.travis
   - docker-compose up -d --build
 
 script:
