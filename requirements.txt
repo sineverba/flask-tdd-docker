@@ -2,6 +2,7 @@ aniso8601==8.0.0
 attrs==19.3.0
 black==19.10b0
 click==7.1.1
+codecov==2.0.22
 coveralls==2.0.0
 flake8==3.7.9
 Flask==1.1.1
