@@ -1,7 +1,7 @@
 # Flask TDD + Docker
 
 [![Build Status](https://travis-ci.com/sineverba/flask-tdd-docker.svg?branch=master)](https://travis-ci.com/sineverba/flask-tdd-docker) 
-[![Coverage Status](https://coveralls.io/repos/github/sineverba/flask-tdd-docker/badge.svg?branch=master)](https://coveralls.io/github/sineverba/flask-tdd-docker?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/sineverba/flask-tdd-docker/badge.svg?branch=master)](https://coveralls.io/github/sineverba/flask-tdd-docker?branch=master) [![codecov](https://codecov.io/gh/sineverba/flask-tdd-docker/branch/master/graph/badge.svg)](https://codecov.io/gh/sineverba/flask-tdd-docker)
 
 ## Setup dependencies
 
