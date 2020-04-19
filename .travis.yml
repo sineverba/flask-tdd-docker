@@ -22,9 +22,6 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-install:
-  - pip install coveralls
-
 before_script:
   - docker-compose up -d --build
 
@@ -35,7 +32,7 @@ script:
   
 
 after_success:
-  - coveralls debug
+  - docker-compose exec users coveralls
 
 after_script:
   - docker-compose down
