@@ -35,6 +35,7 @@ script:
   
 
 after_success:
+  - cat coverage.xml
   - coveralls
 
 after_script:
