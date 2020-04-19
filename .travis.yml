@@ -22,10 +22,10 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-install:
-  - pip install coveralls
-
 before_script:
+  - rm Dockerfile
+  - cp Dockferfile.travis Dockerfile
+  - rm Dockerfile.travis
   - docker-compose up -d --build
 
 script:
@@ -35,8 +35,7 @@ script:
   
 
 after_success:
-  #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
-  - coveralls debug
+  - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
 
 after_script:
   - docker-compose down
