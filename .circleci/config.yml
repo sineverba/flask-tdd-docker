@@ -14,11 +14,12 @@ jobs:
             rm Dockerfile
             cp Dockerfile.travis Dockerfile
             rm Dockerfile.travis
+            docker-compose up -d --build
 
-      - run:
+      #- run:
 
-          name: Start container
-          command: docker-compose up -d --build
+      #    name: Start container
+      #    command: docker-compose up -d --build
 
       - run:
 
