@@ -11,10 +11,9 @@ jobs:
 
           name: Prepare container
           command: |
-            rm Dockerfile
-            cp Dockerfile.travis Dockerfile
-            rm Dockerfile.travis
-            docker-compose up -d --build
+            docker create -v /config --name config alpine:3.4 /bin/true
+            docker cp entrypoint.sh config:/config
+            docker-compose up --volumes-from config -d --build
 
       #- run:
 
