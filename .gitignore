@@ -1,5 +1,7 @@
+.coverage
 .idea
 .vscode
 __pycache__
 env
 htmlcov/
+coverage.xml
