@@ -29,13 +29,13 @@ before_script:
   - docker-compose up -d --build
 
 script:
-  - docker-compose exec users python -m pytest "project/tests" --cov="project" --cov-report=xml
+  - docker-compose exec users python -m pytest "project/tests" --cov="project"
   - docker-compose exec users black project
   - docker-compose exec users flake8 project
   
 
 after_success:
-  - coveralls --rcfile=coverage.xml
+  - coveralls debug
 
 after_script:
   - docker-compose down
