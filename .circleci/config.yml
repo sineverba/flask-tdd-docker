@@ -13,7 +13,7 @@ jobs:
           command: |
             docker create -v /config --name config alpine:3.4 /bin/true
             docker cp entrypoint.sh config:/config
-            docker build --volumes-from config -t flask-tdd-docker_users .
+            docker build -v config:/config -t flask-tdd-docker_users .
             docker-compose up --volumes-from config -d --build
 
       #- run:
