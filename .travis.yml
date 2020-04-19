@@ -24,7 +24,7 @@ before_install:
 
 before_script:
   - rm Dockerfile
-  - cp Dockferfile.travis Dockerfile
+  - cp Dockerfile.travis Dockerfile
   - rm Dockerfile.travis
   - docker-compose up -d --build
 
