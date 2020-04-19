@@ -35,8 +35,7 @@ script:
   
 
 after_success:
-  - cat coverage.xml
-  - coveralls
+  - coveralls --rcfile=coverage.xml
 
 after_script:
   - docker-compose down
