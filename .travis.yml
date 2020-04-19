@@ -32,7 +32,7 @@ script:
   
 
 after_success:
-  - docker-compose exec users coveralls
+  - docker-compose exec users COVERALLS_REPO_TOKEN=$COVERALL_REPO_TOKEN coveralls
 
 after_script:
   - docker-compose down
