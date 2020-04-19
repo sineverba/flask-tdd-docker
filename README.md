@@ -34,7 +34,19 @@ $ docker-compose exec users python manage.py seed_db
 #### Run test
 
 ``` bash
-$ docker-compose exec users python -m pytest "project/tests"
+$ docker-compose exec users python -m pytest "project/tests" --cov="project"
+```
+
+#### Run linter (Flake8 + Black + isort)
+
+``` bash
+$ docker-compose exec users flake8 project
+$ docker-compose exec users black project --check
+$ docker-compose exec users black project --diff
+$ docker-compose exec users black project
+$ docker-compose exec users /bin/sh -c "isort project/**/*.py --check-only"
+$ docker-compose exec users /bin/sh -c "isort project/**/*.py --diff"
+$ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 ```
 
 ---------------------------------------------------------------
