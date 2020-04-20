@@ -18,32 +18,38 @@ env:
 
 
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  #- sudo rm /usr/local/bin/docker-compose
+  #- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  #- chmod +x docker-compose
+  #- sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - rm Dockerfile
-  - cp Dockerfile.travis Dockerfile
-  - rm Dockerfile.travis
-  - docker-compose up -d --build
+  #- rm Dockerfile
+  #- cp Dockerfile.travis Dockerfile
+  #- rm Dockerfile.travis
+  #- docker-compose up -d --build
 
 script:
-  - docker-compose exec users python -m pytest "project/tests" --cov="project"
-  - docker-compose exec users black project
-  - docker-compose exec users flake8 project
+  #- docker-compose exec users python -m pytest "project/tests" --cov="project"
+  #- docker-compose exec users black project
+  #- docker-compose exec users flake8 project
+  - echo "no test!"
   
 
 after_success:
-  - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
-  - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
+  #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
+  #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
   # Build the image, only in master
   #- test $TRAVIS_BRANCH = 'master'
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
-      docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
-    fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
+  #    docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
+  #  fi
+  - docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod "."
+  - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+  - docker push $HEROKU_REGISTRY_IMAGE
+  - chmod +x ./release.sh
+  - ./release.sh
 
 
 after_script:
-  - docker-compose down
+  #- docker-compose down
