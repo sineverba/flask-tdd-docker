@@ -38,8 +38,11 @@ script:
 after_success:
   - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
   - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
-  # Build the image
-  - docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod "."
+  # Build the image, only in master
+  #- test $TRAVIS_BRANCH = 'master'
+  - if [[ $TRAVIS_BRANCH == "master"]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
+      docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod "."
+    fi
 
 
 after_script:
