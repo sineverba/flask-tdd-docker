@@ -41,14 +41,13 @@ after_success:
   #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
   # Build the image, only in master
   #- test $TRAVIS_BRANCH = 'master'
-  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
-  #    docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
-  #  fi
-  - docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod "."
-  - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-  - docker push $HEROKU_REGISTRY_IMAGE
-  - chmod +x ./release.sh
-  - ./release.sh
+  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
+      docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
+      docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com;
+      docker push $HEROKU_REGISTRY_IMAGE;
+      chmod +x ./release.sh;
+      ./release.sh;
+    fi
 
 
 after_script:
