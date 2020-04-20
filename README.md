@@ -2,11 +2,11 @@
 
 #### Test Status   
 
-![Travis (.com)](https://img.shields.io/travis/com/sineverba/flask-tdd-docker?label=Travis%20CI&style=flat-square)
+[![Build Status](https://api.travis-ci.com/sineverba/flask-tdd-docker.svg?branch=master)](https://travis-ci.com/sineverba/flask-tdd-docker)
 
 #### Code Coverage
 
-![Coveralls github branch](https://img.shields.io/coveralls/github/sineverba/flask-tdd-docker/master?label=Coveralls&style=flat-square) ![Codecov branch](https://img.shields.io/codecov/c/github/sineverba/flask-tdd-docker/master?label=Codecov&style=flat-square)
+[![Coverage Status](https://coveralls.io/repos/github/sineverba/flask-tdd-docker/badge.svg?branch=master)](https://coveralls.io/github/sineverba/flask-tdd-docker?branch=master) [![codecov](https://codecov.io/gh/sineverba/flask-tdd-docker/branch/master/graph/badge.svg)](https://codecov.io/gh/sineverba/flask-tdd-docker)
 
 ## Setup dependencies
 
