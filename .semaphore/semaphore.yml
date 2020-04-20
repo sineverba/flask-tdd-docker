@@ -30,6 +30,7 @@ blocks:
             - checkout
             - docker-compose up -d --build
             - docker-compose ps
+            - docker-compose down
 
   #- name: "Run Unit tests"
   #  task:
