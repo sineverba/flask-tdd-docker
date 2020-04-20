@@ -14,6 +14,8 @@ branches:
 
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
+  IMAGE_NAME: flask-tdd-docker
+  GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
 
 
@@ -28,6 +30,10 @@ before_script:
   #- cp Dockerfile.travis Dockerfile
   #- rm Dockerfile.travis
   #- docker-compose up -d --build
+  - docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE
+  - docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME-$IMAGE_NAME:latest || true
+  - docker build --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME-$IMAGE_NAME:latest --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME-$IMAGE_NAME:latest --file ./Dockerfile.prod "."
+  - docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME-$IMAGE_NAME:latest
 
 script:
   #- docker-compose exec users python -m pytest "project/tests" --cov="project"
