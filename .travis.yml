@@ -6,6 +6,7 @@ language: python
 
 services:
   - docker
+  - postgresql
 
 branches:
   only:
@@ -30,6 +31,9 @@ before_script:
   #- cp Dockerfile.travis Dockerfile
   #- rm Dockerfile.travis
   #- docker-compose up -d --build
+  # Create the database
+  - psql -c 'create database users;' -U postgres
+
   - docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE
   - docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true
   - docker build 
@@ -39,10 +43,11 @@ before_script:
   - docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
+  - docker run $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   #- docker-compose exec users python -m pytest "project/tests" --cov="project"
   #- docker-compose exec users black project
   #- docker-compose exec users flake8 project
-  - echo "no test!"
+  # - echo "no test!"
   
 
 after_success:
