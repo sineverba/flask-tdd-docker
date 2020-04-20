@@ -14,6 +14,7 @@ branches:
 
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
+  HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
 
 
 before_install:
@@ -37,6 +38,8 @@ script:
 after_success:
   - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
   - docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
+  # Build the image
+  - docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod "."
 
 
 after_script:
