@@ -37,16 +37,16 @@ before_script:
 
   - docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE
   - docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true
-  - docker build 
-      --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-      --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest 
-      --file ./Dockerfile.prod "."
-  - docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  #- docker build 
+  #    --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  #    --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest 
+  #    --file ./Dockerfile.prod "."
+  #- docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
   # export DATABASE_URL=postgresql://foo:bar@ec2-107-20-230-70.compute-1.amazonaws.com:5432/datn10dvjpjut9
   # docker run --name flask-tdd -e "PORT=8765" -p 5002:8765 registry.heroku.com/thawing-savannah-60405/web:latest
-  - docker run -e $DATABASE_URL $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  - docker run -e DATABASE_URL=$DATABASE_URL $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   #- docker-compose exec users python -m pytest "project/tests" --cov="project"
   #- docker-compose exec users black project
   #- docker-compose exec users flake8 project
