@@ -1,25 +1,22 @@
 # Flask TDD + Docker
 
-[![Build Status](https://travis-ci.com/sineverba/flask-tdd-docker.svg?branch=master)](https://travis-ci.com/sineverba/flask-tdd-docker) 
-[![Coverage Status](https://coveralls.io/repos/github/sineverba/flask-tdd-docker/badge.svg?branch=master)](https://coveralls.io/github/sineverba/flask-tdd-docker?branch=master) [![codecov](https://codecov.io/gh/sineverba/flask-tdd-docker/branch/master/graph/badge.svg)](https://codecov.io/gh/sineverba/flask-tdd-docker)
+#### Test Status   
+
+![Travis (.com)](https://img.shields.io/travis/com/sineverba/flask-tdd-docker?label=Travis%20CI&style=flat-square)
+
+#### Code Coverage
+
+![Coveralls github branch](https://img.shields.io/coveralls/github/sineverba/flask-tdd-docker/master?label=Coveralls&style=flat-square) ![Codecov branch](https://img.shields.io/codecov/c/github/sineverba/flask-tdd-docker/master?label=Codecov&style=flat-square)
 
 ## Setup dependencies
 
 ``` bash
-#$ sudo add-apt-repository ppa:deadsnakes/ppa
+#$ sudo add-apt-repository ppa:deadsnakes/ppa - if necessary
 $ sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget
 $ sudo apt install python3.8 python3-pip python3-setuptools python3.8-venv -y
 #$ sudo add-apt-repository --remove ppa:deadsnakes/ppa
 ```
 
-### First install
-
-``` bash
-
-$ python3.8 -m venv env
-$ source env/bin/activate
-(env) pip install -r requirements.txt
-```
 
 #### Launch Docker
 
@@ -69,15 +66,3 @@ $ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 ### Spin the image
 
 `$ heroku container:release web -a <app_name>`
-
-------------------------------------------------------------
-
-## Python useful commands
-
-### Save requirements
-
-`(env) $ pip freeze > requirements.txt`
-
-### Set executable
-
-`$ chmod +x entrypoint.sh`
