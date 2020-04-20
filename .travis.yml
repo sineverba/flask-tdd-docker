@@ -18,6 +18,7 @@ env:
   IMAGE_NAME: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
+  DATABASE_URL: postgres://postgres@127.0.0.1:5432/users
 
 
 before_install:
@@ -43,7 +44,9 @@ before_script:
   - docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
-  - docker run $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  # export DATABASE_URL=postgresql://foo:bar@ec2-107-20-230-70.compute-1.amazonaws.com:5432/datn10dvjpjut9
+  # docker run --name flask-tdd -e "PORT=8765" -p 5002:8765 registry.heroku.com/thawing-savannah-60405/web:latest
+  - docker run -e $DATABASE_URL $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   #- docker-compose exec users python -m pytest "project/tests" --cov="project"
   #- docker-compose exec users black project
   #- docker-compose exec users flake8 project
