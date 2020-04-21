@@ -40,15 +40,14 @@ before_script:
   #- docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
-  # export DATABASE_URL=postgresql://foo:bar@ec2-107-20-230-70.compute-1.amazonaws.com:5432/datn10dvjpjut9
-  # docker run --name flask-tdd -e "PORT=8765" -p 5002:8765 registry.heroku.com/thawing-savannah-60405/web:latest
-  - docker run -d --name flask-tdd -e "PORT=8765" -e DATABASE_URL=$DATABASE_URL -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  - export DATABASE_URL=$DATABASE_URL
+  #- docker run -d --name flask-tdd -e "PORT=8765" -e DATABASE_URL=$DATABASE_URL -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  - docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   - docker exec flask-tdd python manage.py recreate_db
   - docker exec flask-tdd python manage.py seed_db
   - docker exec flask-tdd python -m pytest "project/tests"
   - docker exec flask-tdd black project
   - docker exec flask-tdd flake8 project
-  # - echo "no test!"
   
 
 after_success:
