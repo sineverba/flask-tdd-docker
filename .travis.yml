@@ -15,6 +15,19 @@ env:
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
 
+# Travis test
+##### Da branch release a master: deve partire la numero 2. Funziona?
+##### Pong deve avere V2. Funziona?
+
+##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
+##### Pong deve avere pong! New release done!. Funziona?
+
+##### Da branch release a develop: deve partire la numero 1. Funziona?
+
+
+##### Da terzo branch a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1.
+##### Branch develop DOPO il merge: deve partire la numero 1. Funziona? OK, è partita la numero 1.
+
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
 
