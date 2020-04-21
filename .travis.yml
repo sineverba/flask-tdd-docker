@@ -19,13 +19,10 @@ env:
 
 ### Sotto test
 
-##### Push su develop: deve partire la numero 1. Funziona?
-
 ### Ancora da provare
 
 ##### Cron su master: per eseguire, dobbiamo cambiare Docker Image Tests in (type = pull_request OR type = cron) AND branch = master
 ##### Cron su master: NON deve eseguire deploy su Heroku
-
 ##### Push su master: non deve partire nulla
 
 ### I seguenti passati con successo
@@ -42,6 +39,8 @@ env:
 ##### Da branch release a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1
 
 ##### Cron su master: NON deve essere eseguito nulla. Funziona? Sembra non sia stata eseguita
+
+##### Push su develop: deve partire la numero 1. Funziona? OK, è partita la numero 1
 
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
