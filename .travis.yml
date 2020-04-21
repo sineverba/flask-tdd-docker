@@ -26,7 +26,7 @@ stages:
     if: type = pull_request AND branch = master
 
   - name: Deploy to Heroku
-    if: type != pull_request AND branch = master
+    if: (type != pull_request AND type != cron) AND branch = master
 
 jobs:
   include:
@@ -70,19 +70,8 @@ jobs:
         docker container stop $(docker container ls -aq);
 
     - stage: Deploy to Heroku
-      before_script: |
-        docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE;
-        docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true;
-        docker build --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest --file ./Dockerfile.prod ".";
-        docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
       script: |
-        docker network create -d bridge flask-tdd-net;
-        docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:12-alpine;
-        docker run -d --name app -e "PORT=8765" -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" -p 5002:8765 --network=flask-tdd-net $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
-        docker exec app python -m pytest "project/tests";
-        docker exec app flake8 project;
-        docker exec app black project --check;
-        docker exec app isort project/**/*.py --check-only;
+        echo "Deploying to Heroku. No tests.";
       after_success: |
         docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
         docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com;
