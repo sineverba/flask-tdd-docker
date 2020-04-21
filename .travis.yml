@@ -50,6 +50,9 @@ script:
   #- docker exec flask-tdd flake8 project
   - rm docker-compose.yml
   - cp docker-compose.travis docker-compose.yml
+  - rm entrypoint.sh
+  - cp entrypoint.travis entrypoint.sh
+  - chmod +x ./entrypoint.sh
   - docker-compose up -d
   - docker-compose exec app python -m pytest "project/tests" --cov="project"
   - docker-compose exec app black project

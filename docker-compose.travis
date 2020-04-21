@@ -4,11 +4,14 @@ services:
 
   app:
     image: $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+    entrypoint: ['/usr/src/app/entrypoint.sh']
     ports:
       - 5002:8765
     environment:
       - DATABASE_TEST_URL=postgresql://postgres:postgres@postgres:5432/users_test
       - PORT=8765
+    volumes:
+      - ./entrypoint.sh:/usr/src/app/entrypoint.sh
     depends_on:
       - postgres
 
