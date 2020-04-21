@@ -20,7 +20,10 @@ conditions: v1
 
 stages:
   - name: Docker Compose Tests
-    if: type = pull_request
+    if: type != api
+
+  - name: Docker Image Tests
+    if: type = pull_request AND branch = master
 
 jobs:
   include:
@@ -39,8 +42,40 @@ jobs:
         docker-compose exec users python -m pytest "project/tests" --cov="project";
         docker-compose exec users black project;
         docker-compose exec users flake8 project;
+        docker-compose exec users isort project/**/*.py --check-only;
       after_success: |
         docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls;
         docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN};
         docker-compose stop;
         docker-compose down -v;
+
+    - stage: Docker Image Tests
+      before_script: |
+        docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE;
+        docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true;
+        docker build 
+          --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+          --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest 
+          --file ./Dockerfile.prod ".";
+        docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
+      script: |
+        docker network create -d bridge flask-tdd-net;
+        docker run -d --name db
+          -e POSTGRES_USER=postgres
+          -e POSTGRES_PASSWORD=postgres
+          -e POSTGRES_DB=users
+          -p 5432:5432
+          --network=flask-tdd-net
+          postgres:12-alpine;
+        docker run -d --name app
+          -e "PORT=8765"
+          -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users"
+          -p 5002:8765
+          --network=flask-tdd-net
+          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
+        docker exec app python -m pytest "project/tests";
+        docker exec app flake8 project;
+        docker exec app black project --check;
+        docker exec app isort project/**/*.py --check-only;
+      after_success: |
+        docker container stop $(docker container ls -aq);
