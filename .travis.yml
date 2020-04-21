@@ -42,8 +42,8 @@ before_script:
 script:
   - export TESTING=True
   - docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-  - docker exec flask-tdd python manage.py recreate_db
-  - docker exec flask-tdd python manage.py seed_db
+  #- docker exec flask-tdd python manage.py recreate_db
+  #- docker exec flask-tdd python manage.py seed_db
   - docker exec flask-tdd python -m pytest "project/tests"
   - docker exec flask-tdd black project
   - docker exec flask-tdd flake8 project
