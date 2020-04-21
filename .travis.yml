@@ -12,41 +12,9 @@ branches:
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
   IMAGE_NAME: flask-tdd-docker
+  IMAGE_TAG: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-
-# Travis test
-
-### Sotto test
-
-##### Cron su master: Funziona?
-##### Cron su master: NON deve eseguire deploy su Heroku. Funziona?
-##### Push su master: non deve partire nulla. Heroku V15 ultima
-
-##### Da branch release a master: deve partire la numero 2. Funziona? OK
-##### Branch master DOPO il merge: deve partire la numero 3. Funziona? no
-
-### Ancora da provare
-
-##### Da branch release a master: deve partire la numero 2. Funziona?
-##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
-
-### I seguenti passati con successo
-
-##### Da terzo branch a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1.
-##### Branch develop DOPO il merge: deve partire la numero 1. Funziona? OK, è partita la numero 1.
-
-##### Da branch release a master: deve partire la numero 2. Funziona? OK, è partita la numero 2
-##### Pong deve avere V3. Funziona? OK, pong non è stato toccato
-
-##### Branch master DOPO il merge: deve partire la numero 3. Funziona? OK, è partita la numero 3
-##### Pong deve avere pong! New release done!. Funziona? OK, è partita la numero 3 ed ha fatto il deploy
-
-##### Da branch release a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1
-
-##### Cron su master: NON deve essere eseguito nulla. Funziona? Sembra non sia stata eseguita
-
-##### Push su develop: deve partire la numero 1. Funziona? OK, è partita la numero 1
 
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
@@ -92,14 +60,36 @@ jobs:
 
     - stage: Docker Image Tests
       before_script: |
-        docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE;
-        docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true;
-        docker build --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest --file ./Dockerfile.prod ".";
-        docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
+        docker login \
+          -u $GITLAB_USER \
+          -p $GITLAB_PERSONAL_ACCESS_TOKEN \
+          $GITLAB_REGISTRY_IMAGE;
+        docker pull \
+          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          || true;
+        docker build \
+          --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          --file ./Dockerfile.prod \
+          ".";
+        docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG;
       script: |
         docker network create -d bridge flask-tdd-net;
-        docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:12-alpine;
-        docker run -d --name app -e "PORT=8765" -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" -p 5002:8765 --network=flask-tdd-net $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest;
+        docker run -d \
+          --name db \
+          -e POSTGRES_USER=postgres \
+          -e POSTGRES_PASSWORD=postgres \
+          -e POSTGRES_DB=users \
+          -p 5432:5432 \
+          --network=flask-tdd-net \
+          postgres:12-alpine;
+        docker run -d \
+          --name app \
+          -e "PORT=8765" \
+          -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" \
+          -p 5002:8765 \
+          --network=flask-tdd-net \
+          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG;
         docker exec app python -m pytest "project/tests";
         docker exec app flake8 project;
         docker exec app black project --check;
