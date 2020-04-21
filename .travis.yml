@@ -19,11 +19,14 @@ env:
 
 ### Sotto test
 
+##### Cron su master: Funziona?
+##### Cron su master: NON deve eseguire deploy su Heroku. Funziona?
+##### Push su master: non deve partire nulla. Heroku V15 ultima
+
 ### Ancora da provare
 
-##### Cron su master: per eseguire, dobbiamo cambiare Docker Image Tests in (type = pull_request OR type = cron) AND branch = master
-##### Cron su master: NON deve eseguire deploy su Heroku
-##### Push su master: non deve partire nulla
+##### Da branch release a master: deve partire la numero 2. Funziona?
+##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
 
 ### I seguenti passati con successo
 
@@ -52,11 +55,12 @@ stages:
     # Run on push against develop
 
   - name: Docker Image Tests
-    if: type = pull_request AND branch = master
+    if: (type = pull_request OR type = cron) AND branch = master
     # Run on every pull request against master
+    # Run on CRON tests
 
   - name: Deploy to Heroku
-    if: (type != pull_request AND type != cron) AND branch = master
+    if: (type != pull_request AND type != cron AND type != push) AND branch = master
     # Run after merging into master. No test
 
 jobs:
