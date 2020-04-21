@@ -29,7 +29,7 @@ before_script:
   #- rm Dockerfile.travis
   #- docker-compose up -d --build
   # Create the database
-  - psql -c 'create database users;' -U postgres
+  #- psql -c 'create database users;' -U postgres
 
   - docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE
   - docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true
@@ -40,7 +40,7 @@ before_script:
   #- docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
-  - export DATABASE_URL=$DATABASE_URL
+  #- export DATABASE_URL=$DATABASE_URL
   #- docker run -d --name flask-tdd -e "PORT=8765" -e DATABASE_URL=$DATABASE_URL -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   - docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   #- docker exec flask-tdd python manage.py recreate_db
