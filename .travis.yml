@@ -18,7 +18,7 @@ env:
   IMAGE_NAME: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-  DATABASE_TEST_URL: postgres://postgres@postgres:5432/users
+  DATABASE_TEST_URL: postgres://postgres@localhost:5432/users
 
 
 before_install:
