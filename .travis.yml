@@ -29,7 +29,7 @@ before_script:
   #- rm Dockerfile.travis
   #- docker-compose up -d --build
   # Create the database
-  #- psql -c 'create database users;' -U postgres
+  - psql -c 'create database users;' -U postgres
 
   - docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE
   - docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true
