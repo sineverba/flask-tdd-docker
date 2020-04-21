@@ -23,8 +23,8 @@ env:
 ##### Cron su master: NON deve eseguire deploy su Heroku. Funziona?
 ##### Push su master: non deve partire nulla. Heroku V15 ultima
 
-##### Da branch release a master: deve partire la numero 2. Funziona?
-##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
+##### Da branch release a master: deve partire la numero 2. Funziona? OK
+##### Branch master DOPO il merge: deve partire la numero 3. Funziona? no
 
 ### Ancora da provare
 
@@ -63,7 +63,7 @@ stages:
     # Run on CRON tests
 
   - name: Deploy to Heroku
-    if: (type != pull_request AND type != cron AND type != push) AND branch = master
+    if: (type != pull_request AND type != cron) AND branch = master
     # Run after merging into master. No test
 
 jobs:
