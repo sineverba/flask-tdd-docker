@@ -1,6 +1,8 @@
 dist: bionic
 os: linux
-language: python
+language: php
+php:
+  - 7.2
 services:
   - docker
 branches:
