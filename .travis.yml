@@ -6,7 +6,6 @@ language: python
 
 services:
   - docker
-  #- postgresql
 
 branches:
   only:
@@ -18,7 +17,6 @@ env:
   IMAGE_NAME: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-  DATABASE_TEST_URL: postgres://postgres:postgres@flask-tdd-net:5432/users
 
 
 before_install:
@@ -40,21 +38,20 @@ before_script:
   #- docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
-  - export TESTING=True
   - docker network create -d bridge flask-tdd-net
-  - docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:12-alpine
-  - docker run -d --name app -e "PORT=8765" -p 5002:8765 --network=flask-tdd-net $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-  - docker exec app python manage.py recreate_db
-  - docker exec app python manage.py seed_db
+  - docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:latest
+  - docker run -d --name app -e "PORT=8765" -p 5002:8765 -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" --network=flask-tdd-net registry.gitlab.com/sineverba/warehouse:latest
   - docker exec app python -m pytest "project/tests"
-  - docker exec app black project
   - docker exec app flake8 project
+  - docker exec app black project --check
+  - docker exec app isort project/**/*.py --check-only -p no:warnings
+    
   
 
 after_success:
   - docker container stop $(docker container ls -aq)
-  #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
-  #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
+  #- docker exec app -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST coveralls
+  #- docker exec app -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST codecov --token=${CODECOV_TOKEN}
   # Build the image, only in master
   #- test $TRAVIS_BRANCH = 'master'
   - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
