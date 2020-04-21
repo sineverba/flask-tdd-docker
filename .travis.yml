@@ -6,7 +6,7 @@ language: python
 
 services:
   - docker
-  - postgresql
+  #- postgresql
 
 branches:
   only:
@@ -18,7 +18,7 @@ env:
   IMAGE_NAME: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-  DATABASE_TEST_URL: postgres://postgres@127.0.0.1:5432/users
+  DATABASE_TEST_URL: postgres://postgres:postgres@flask-tdd-net:5432/users
 
 
 before_install:
@@ -41,12 +41,14 @@ before_script:
 
 script:
   - export TESTING=True
-  - docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-  #- docker exec flask-tdd python manage.py recreate_db
-  #- docker exec flask-tdd python manage.py seed_db
-  - docker exec flask-tdd python -m pytest "project/tests"
-  - docker exec flask-tdd black project
-  - docker exec flask-tdd flake8 project
+  - docker network create -d bridge flask-tdd-net
+  - docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:12-alpine
+  - docker run -d --name app -e "PORT=8765" -p 5002:8765 --network=flask-tdd-net $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  - docker exec app python manage.py recreate_db
+  - docker exec app python manage.py seed_db
+  - docker exec app python -m pytest "project/tests"
+  - docker exec app black project
+  - docker exec app flake8 project
   
 
 after_success:
