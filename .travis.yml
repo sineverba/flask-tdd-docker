@@ -35,7 +35,12 @@ jobs:
         cp Dockerfile.travis Dockerfile;
         rm Dockerfile.travis;
         docker-compose up -d --build;
+      script: |
+        docker-compose exec users python -m pytest "project/tests" --cov="project";
+        docker-compose exec users black project;
+        docker-compose exec users flake8 project;
+      after_success: |
+        docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls;
+        docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN};
         docker-compose stop;
-        docker-compose down;
-      script:
-        echo "no test!";
+        docker-compose down -v;
