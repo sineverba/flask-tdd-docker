@@ -33,3 +33,7 @@ jobs:
         cp Dockerfile.travis Dockerfile;
         rm Dockerfile.travis;
         docker-compose up -d --build;
+        docker-compose stop;
+        docker-compose down;
+      script:
+        echo "no test!";
