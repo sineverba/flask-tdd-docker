@@ -32,12 +32,18 @@ before_script:
 
 script:
   - docker network create -d bridge flask-tdd-net
-  - docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 --network=flask-tdd-net postgres:12-alpine
-  - docker run -d --name app \
-      -e "PORT=8765" \
-      -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" \
-      -p 5002:8765 \
-      --network=flask-tdd-net \
+  - docker run -d --name db
+      -e POSTGRES_USER=postgres
+      -e POSTGRES_PASSWORD=postgres
+      -e POSTGRES_DB=users
+      -p 5432:5432
+      --network=flask-tdd-net
+      postgres:12-alpine
+  - docker run -d --name app
+      -e "PORT=8765"
+      -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users"
+      -p 5002:8765
+      --network=flask-tdd-net
       $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
   - docker exec app python -m pytest "project/tests"
   - docker exec app flake8 project
