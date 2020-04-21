@@ -2,11 +2,11 @@ dist: bionic
 
 os: linux
 
-language: python
+language: php
 
 services:
   - docker
-  - postgresql
+  #- postgresql
 
 branches:
   only:
@@ -49,11 +49,15 @@ script:
   #- docker exec flask-tdd black project
   #- docker exec flask-tdd flake8 project
   - docker-compose -f docker-compose-travis.yml up -d
+  - docker-compose exec app python -m pytest "project/tests" --cov="project"
+  - docker-compose exec app black project
+  - docker-compose exec app flake8 projec
+  - docker-compose stop
   - docker-compose down -v
   
 
 after_success:
-  - docker container stop $(docker container ls -aq)
+  #- docker container stop $(docker container ls -aq)
   #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
   #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
   # Build the image, only in master
