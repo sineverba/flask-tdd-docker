@@ -48,7 +48,9 @@ script:
   #- docker exec flask-tdd python -m pytest "project/tests"
   #- docker exec flask-tdd black project
   #- docker exec flask-tdd flake8 project
-  - docker-compose -f docker-compose-travis.yml up -d
+  - rm docker-compose.yml
+  - cp docker-compose.travis docker-compose.yml
+  - docker-compose up -d
   - docker-compose exec app python -m pytest "project/tests" --cov="project"
   - docker-compose exec app black project
   - docker-compose exec app flake8 projec

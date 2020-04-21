@@ -7,12 +7,12 @@ services:
     ports:
       - 5002:8765
     environment:
-      - DATABASE_TEST_URL=postgresql://postgres:postgres@users-db:5432/users_test
+      - DATABASE_TEST_URL=postgresql://postgres:postgres@postgres:5432/users_test
       - PORT=8765
     depends_on:
       - users-db
 
-  users-db:
+  postgres:
     build:
       context: ./project/db
       dockerfile: Dockerfile
