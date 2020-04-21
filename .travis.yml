@@ -23,6 +23,9 @@ env:
 ##### Cron su master: NON deve eseguire deploy su Heroku. Funziona?
 ##### Push su master: non deve partire nulla. Heroku V15 ultima
 
+##### Da branch release a master: deve partire la numero 2. Funziona?
+##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
+
 ### Ancora da provare
 
 ##### Da branch release a master: deve partire la numero 2. Funziona?
