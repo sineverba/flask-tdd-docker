@@ -60,9 +60,18 @@ jobs:
 
     - stage: Docker Image Tests
       before_script: |
-        docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE;
-        docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG || true;
-        docker build --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG --file ./Dockerfile.prod ".";
+        docker login \
+          -u $GITLAB_USER \
+          -p $GITLAB_PERSONAL_ACCESS_TOKEN \
+          $GITLAB_REGISTRY_IMAGE;
+        docker pull \
+          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          || true;
+        docker build \
+          --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
+          --file ./Dockerfile.prod \
+          ".";
         docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG;
       script: |
         docker network create -d bridge flask-tdd-net;
