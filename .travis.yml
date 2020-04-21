@@ -113,6 +113,10 @@ jobs:
           --name app \
           -e "PORT=8765" \
           -e "DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/users" \
+          -e TRAVIS \
+          -e TRAVIS_JOB_ID \
+          -e TRAVIS_BRANCH \
+          -e TRAVIS_PULL_REQUEST \
           -p 5002:8765 \
           --network=flask-tdd-net \
           $HEROKU_REGISTRY_IMAGE
@@ -121,8 +125,8 @@ jobs:
         docker exec app flake8 project;
         docker exec app black project --check;
         docker exec app isort project/**/*.py --check-only;
-        docker exec app -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST coveralls;
-        docker exec app -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST codecov --token=${CODECOV_TOKEN};
+        docker exec app coveralls;
+        docker exec app codecov --token=${CODECOV_TOKEN};
       after_success: |
         docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com;
         docker push $HEROKU_REGISTRY_IMAGE;
