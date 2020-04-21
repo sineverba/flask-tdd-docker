@@ -83,7 +83,7 @@ jobs:
       after_success: |
         docker container stop $(docker container ls -aq);
 
-    - stage: Docker Image Tests
+    - stage: Deploy to Heroku
       before_script: |
         docker login -u $GITLAB_USER -p $GITLAB_PERSONAL_ACCESS_TOKEN $GITLAB_REGISTRY_IMAGE;
         docker pull $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest || true;
