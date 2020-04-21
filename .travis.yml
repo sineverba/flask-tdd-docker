@@ -2,11 +2,11 @@ dist: bionic
 
 os: linux
 
-language: php
+language: python
 
 services:
   - docker
-  #- postgresql
+  - postgresql
 
 branches:
   only:
@@ -18,7 +18,7 @@ env:
   IMAGE_NAME: flask-tdd-docker
   GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-  #DATABASE_TEST_URL: postgres://postgres@127.0.0.1:5432/users
+  DATABASE_TEST_URL: postgres://postgres@127.0.0.1:5432/users
 
 
 before_install:
@@ -40,29 +40,17 @@ before_script:
   #- docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
 
 script:
-  #- export DATABASE_URL=$DATABASE_URL
-  #- docker run -d --name flask-tdd -e "PORT=8765" -e DATABASE_URL=$DATABASE_URL -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-  #- docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
-  #- docker exec flask-tdd python manage.py recreate_db
-  #- docker exec flask-tdd python manage.py seed_db
-  #- docker exec flask-tdd python -m pytest "project/tests"
-  #- docker exec flask-tdd black project
-  #- docker exec flask-tdd flake8 project
-  - rm docker-compose.yml
-  - cp docker-compose.travis docker-compose.yml
-  - rm entrypoint.sh
-  - cp entrypoint.travis entrypoint.sh
-  - chmod +x ./entrypoint.sh
-  - docker-compose up -d
-  - docker-compose exec app python -m pytest "project/tests" --cov="project"
-  - docker-compose exec app black project
-  - docker-compose exec app flake8 projec
-  - docker-compose stop
-  - docker-compose down -v
+  - export TESTING=True
+  - docker run -d --name flask-tdd -e "PORT=8765" -p 5002:8765 $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:latest
+  - docker exec flask-tdd python manage.py recreate_db
+  - docker exec flask-tdd python manage.py seed_db
+  - docker exec flask-tdd python -m pytest "project/tests"
+  - docker exec flask-tdd black project
+  - docker exec flask-tdd flake8 project
   
 
 after_success:
-  #- docker container stop $(docker container ls -aq)
+  - docker container stop $(docker container ls -aq)
   #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls
   #- docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN}
   # Build the image, only in master
