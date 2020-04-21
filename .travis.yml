@@ -16,17 +16,32 @@ env:
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
 
 # Travis test
-##### Da branch release a master: deve partire la numero 2. Funziona?
-##### Pong deve avere V2. Funziona?
 
-##### Branch master DOPO il merge: deve partire la numero 3. Funziona?
-##### Pong deve avere pong! New release done!. Funziona?
+### Sotto test
 
-##### Da branch release a develop: deve partire la numero 1. Funziona?
+##### Push su develop: deve partire la numero 1. Funziona?
 
+### Ancora da provare
+
+##### Cron su master: per eseguire, dobbiamo cambiare Docker Image Tests in (type = pull_request OR type = cron) AND branch = master
+##### Cron su master: NON deve eseguire deploy su Heroku
+
+##### Push su master: non deve partire nulla
+
+### I seguenti passati con successo
 
 ##### Da terzo branch a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1.
 ##### Branch develop DOPO il merge: deve partire la numero 1. Funziona? OK, è partita la numero 1.
+
+##### Da branch release a master: deve partire la numero 2. Funziona? OK, è partita la numero 2
+##### Pong deve avere V3. Funziona? OK, pong non è stato toccato
+
+##### Branch master DOPO il merge: deve partire la numero 3. Funziona? OK, è partita la numero 3
+##### Pong deve avere pong! New release done!. Funziona? OK, è partita la numero 3 ed ha fatto il deploy
+
+##### Da branch release a develop: deve partire la numero 1. Funziona? OK, è partita la numero 1
+
+##### Cron su master: NON deve essere eseguito nulla. Funziona? Sembra non sia stata eseguita
 
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
@@ -34,12 +49,16 @@ conditions: v1
 stages:
   - name: Docker Compose Tests
     if: type != api AND branch != master
+    # Run on every pull request against develop
+    # Run on push against develop
 
   - name: Docker Image Tests
     if: type = pull_request AND branch = master
+    # Run on every pull request against master
 
   - name: Deploy to Heroku
     if: (type != pull_request AND type != cron) AND branch = master
+    # Run after merging into master. No test
 
 jobs:
   include:
