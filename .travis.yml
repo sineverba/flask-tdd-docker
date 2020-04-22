@@ -9,9 +9,6 @@ branches:
     - develop
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
-  IMAGE_NAME: flask-tdd-docker
-  IMAGE_TAG: flask-tdd-docker
-  GITLAB_REGISTRY_IMAGE: registry.gitlab.com
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
   DATABASE_TEST_URL: postgresql://postgres:postgres@db:5432/users
 
