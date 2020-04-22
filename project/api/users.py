@@ -4,7 +4,7 @@ from flask_restx import Api, Resource, fields
 from project import db
 from project.api.models import User
 
-users_blueprint = Blueprint("user", __name__)
+users_blueprint = Blueprint("users", __name__)
 api = Api(users_blueprint)
 
 user = api.model(

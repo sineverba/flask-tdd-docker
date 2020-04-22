@@ -10,7 +10,10 @@ branches:
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
-  DATABASE_TEST_URL: postgresql://postgres:postgres@db:5432/users
+  DATABASE_TEST_USER: postgres
+  DATABASE_TEST_PASSWORD: postgres
+  DATABASE_TEST_NAME: users
+  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@db:5432/$DATABASE_TEST_NAME
 
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
@@ -39,10 +42,8 @@ jobs:
         chmod +x docker-compose;
         sudo mv docker-compose /usr/local/bin;
       before_script: |
-        rm Dockerfile;
-        cp Dockerfile.travis Dockerfile;
-        rm Dockerfile.travis;
         docker-compose up -d --build;
+        docker-compose exec users apk add git;
       script: |
         docker-compose exec users python -m pytest "project/tests" --cov="project";
         docker-compose exec users black project;
@@ -60,9 +61,9 @@ jobs:
         docker network create -d bridge test-net;
         docker run -d \
           --name db \
-          -e POSTGRES_USER=postgres \
-          -e POSTGRES_PASSWORD=postgres \
-          -e POSTGRES_DB=users \
+          -e POSTGRES_USER=$DATABASE_TEST_USER \
+          -e POSTGRES_PASSWORD=$DATABASE_TEST_PASSWORD \
+          -e POSTGRES_DB=$DATABASE_TEST_NAME \
           -p 5432:5432 \
           --network=test-net \
           postgres:12-alpine;
@@ -87,9 +88,9 @@ jobs:
         docker network create -d bridge test-net;
         docker run -d \
           --name db \
-          -e POSTGRES_USER=postgres \
-          -e POSTGRES_PASSWORD=postgres \
-          -e POSTGRES_DB=users \
+          -e POSTGRES_USER=$DATABASE_TEST_USER \
+          -e POSTGRES_PASSWORD=$DATABASE_TEST_PASSWORD \
+          -e POSTGRES_DB=$DATABASE_TEST_NAME \
           -p 5432:5432 \
           --network=test-net \
           postgres:12-alpine;
