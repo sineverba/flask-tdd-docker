@@ -42,7 +42,6 @@ jobs:
         sudo mv docker-compose /usr/local/bin;
       before_script: |
         docker-compose up -d --build;
-      # Install git required by coveralls / codecov  
         docker-compose exec users apk add git;
       script: |
         docker-compose exec users python -m pytest "project/tests" --cov="project";
