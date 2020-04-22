@@ -40,8 +40,7 @@ jobs:
         sudo mv docker-compose /usr/local/bin;
       before_script: |
         docker-compose up -d --build;
-      # Install git for future usage from coveralls / codecov
-        docker-compose exec users apk add git
+        docker-compose exec users apk add git;
       script: |
         docker-compose exec users python -m pytest "project/tests" --cov="project";
         docker-compose exec users black project;
