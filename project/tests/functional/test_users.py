@@ -15,7 +15,7 @@ def test_add_user(test_app, test_database):
     )
     data = json.loads(resp.data.decode())
     assert resp.status_code == 201
-    assert "success" in data["message"]
+    assert "added" in data["message"]
 
 
 # Negative test
@@ -76,7 +76,7 @@ def test_delete_user(test_app, test_database, add_user):
     data = json.loads(resp_2.data.decode())
 
     assert resp_2.status_code == 200
-    assert f"{user.id} removed" in data["message"]
+    assert f"{user.email} was removed" in data["message"]
 
     resp_3 = client.get("/users")
     data = json.loads(resp_3.data.decode())
@@ -86,7 +86,7 @@ def test_delete_user(test_app, test_database, add_user):
 
 def test_cannot_delete_user_if_id_is_wrong(test_app, test_database, add_user):
     test_database.session.query(User).delete()
-    user = add_user("remove", "remove@gmail.com")
+    add_user("remove", "remove@gmail.com")
     client = test_app.test_client()
     resp = client.get("/users")
     data = json.loads(resp.data.decode())
@@ -97,7 +97,7 @@ def test_cannot_delete_user_if_id_is_wrong(test_app, test_database, add_user):
     data = json.loads(resp_2.data.decode())
 
     assert resp_2.status_code == 404
-    assert "ID 99999 not found" in data["message"]
+    assert "User 99999 does not exist" in data["message"]
 
     resp_3 = client.get("/users")
     data = json.loads(resp_3.data.decode())
@@ -107,7 +107,7 @@ def test_cannot_delete_user_if_id_is_wrong(test_app, test_database, add_user):
 
 def test_cannot_delete_user_if_id_is_missing(test_app, test_database, add_user):
     test_database.session.query(User).delete()
-    user = add_user("remove", "remove@gmail.com")
+    add_user("remove", "remove@gmail.com")
     client = test_app.test_client()
     resp = client.get("/users")
     data = json.loads(resp.data.decode())
@@ -145,7 +145,7 @@ def test_can_update_user(test_app, test_database, add_user):
 
     data = json.loads(resp_one.data.decode())
     assert resp_one.status_code == 200
-    assert f"{user.id} updated" in data["message"]
+    assert f"{user.id} was updated" in data["message"]
 
     resp_two = client.get(f"users/{user.id}")
     data = json.loads(resp_two.data.decode())
@@ -170,7 +170,7 @@ def test_can_update_user(test_app, test_database, add_user):
             999,
             {"username": "invalid", "email": "invalid@gmail.com"},
             404,
-            "ID 999 not found",
+            "User 999 does not exist",
         ],
     ],
 )

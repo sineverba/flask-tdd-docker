@@ -39,6 +39,12 @@ $ docker-compose exec users python manage.py seed_db
 $ docker-compose exec users python -m pytest "project/tests" --cov="project"
 ```
 
+##### Run unit test in parallel
+
+``` bash
+$ docker-compose exec users pytest "project/tests/test_users_unit.py" -k "unit" -n 4
+```
+
 #### Run linter (Flake8 + Black + isort)
 
 ``` bash
