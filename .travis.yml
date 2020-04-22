@@ -59,20 +59,6 @@ jobs:
 
     - stage: Docker Image Tests
       before_script: |
-#        docker login \
-#          -u $GITLAB_USER \
-#          -p $GITLAB_PERSONAL_ACCESS_TOKEN \
-#          $GITLAB_REGISTRY_IMAGE;
-#        docker pull \
-#          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
-#          || true;
-#        docker build \
-#          --cache-from $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
-#          --tag $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG \
-#          --file ./Dockerfile.prod \
-#          ".";
-#        docker push $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG;
-      script: |
         docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
         docker network create -d bridge test-net;
         docker run -d \
@@ -89,8 +75,8 @@ jobs:
           -e "DATABASE_TEST_URL=$DATABASE_TEST_URL" \
           -p 5002:8765 \
           --network=test-net \
-#          $GITLAB_REGISTRY_IMAGE/$GITLAB_PROJECT_NAMESPACE/$GITLAB_PROJECT_NAME:$IMAGE_TAG;
           $HEROKU_REGISTRY_IMAGE;
+      script: |
         docker exec app python -m pytest "project/tests";
         docker exec app flake8 project;
         docker exec app black project --check;
