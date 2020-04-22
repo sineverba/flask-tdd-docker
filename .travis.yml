@@ -13,7 +13,9 @@ env:
   DATABASE_TEST_USER: postgres
   DATABASE_TEST_PASSWORD: postgres
   DATABASE_TEST_NAME: users
-  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@db:5432/$DATABASE_TEST_NAME
+  DATABASE_TEST_HOST: db
+  DATABASE_TEST_PORT: 5432
+  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
 
 # the following line is needed to enable the TravisCI build conditions
 conditions: v1
@@ -64,7 +66,7 @@ jobs:
           -e POSTGRES_USER=$DATABASE_TEST_USER \
           -e POSTGRES_PASSWORD=$DATABASE_TEST_PASSWORD \
           -e POSTGRES_DB=$DATABASE_TEST_NAME \
-          -p 5432:5432 \
+          -p $DATABASE_TEST_PORT:$DATABASE_TEST_PORT \
           --network=test-net \
           postgres:12-alpine;
         docker run -d \
