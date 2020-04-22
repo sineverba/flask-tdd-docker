@@ -56,10 +56,10 @@ def test_all_users(test_app, test_database, add_user):
     data = json.loads(resp.data.decode())
     assert resp.status_code == 200
     assert len(data) == 2
-    assert "michael" in data[0]["username"]
-    assert "michael@mherman.org" in data[0]["email"]
-    assert "fletcher" in data[1]["username"]
-    assert "fletcher@notreal.com" in data[1]["email"]
+    assert "michael" in data[1]["username"]
+    assert "michael@mherman.org" in data[1]["email"]
+    assert "fletcher" in data[0]["username"]
+    assert "fletcher@notreal.com" in data[0]["email"]
 
 
 # Positive
