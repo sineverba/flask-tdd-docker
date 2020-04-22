@@ -51,7 +51,25 @@ class Users(Resource):
             api.abort(404, f"ID {user_id} not found")
         db.session.delete(user)
         db.session.commit()
-        response_object['message'] = f"{user_id} removed"
+        response_object["message"] = f"{user_id} removed"
+        return response_object, 200
+
+    @api.expect(user, validate=True)
+    def put(self, user_id):
+        post_data = request.get_json()
+        username = post_data.get("username")
+        email = post_data.get("email")
+        response_object = {}
+
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            api.abort(404, f"ID {user_id} not found")
+
+        user.username = username
+        user.email = email
+        db.session.commit()
+
+        response_object = {"message": f"{user_id} updated"}
         return response_object, 200
 
 
