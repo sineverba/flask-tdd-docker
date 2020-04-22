@@ -57,6 +57,24 @@ $ docker-compose exec users /bin/sh -c "isort project/**/*.py --diff"
 $ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 ```
 
+---------------------------------------------------------------
+
+## Start app from local
+
+``` bash
+
+$ docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 postgres:12-alpine
+$ source env/bin/activate
+$ pip install -r requirements.txt
+$ export FLASK_APP=project/__init__.py
+$ export FLASK_ENV=development
+$ export APP_SETTINGS=project.config.DevelopmentConfig
+$ export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/users
+$ flask shell
+$ python manage.py recreate_db
+$ python manage.py seed_db
+$ python manage.py run -h 0.0.0.0
+``` 
 
 ---------------------------------------------------------------
 
