@@ -3,7 +3,7 @@ os: linux
 language: python
 services:
   - docker
-  - postgres
+  - postgresql
 branches:
   only:
     - master
@@ -45,6 +45,8 @@ jobs:
   include:
 
     - stage: Local Tests
+      before_install:
+        - python --version
       install: |
         source env/bin/activate;
         pip install -r requirements.txt;
@@ -139,8 +141,6 @@ jobs:
         docker exec app flake8 project;
         docker exec app black project --check;
         docker exec app isort project/**/*.py --check-only;
-      # docker exec app coveralls;
-      # docker exec app codecov --token=${CODECOV_TOKEN};
       after_success: |
         docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com;
         docker push $HEROKU_REGISTRY_IMAGE;
