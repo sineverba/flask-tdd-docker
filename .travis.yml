@@ -16,7 +16,7 @@ env:
   DATABASE_TEST_NAME: users
   DATABASE_TEST_HOST: db
   DATABASE_TEST_PORT: 5432
-  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
+  DATABASE_TEST_DOCKER_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
   FLASK_APP: project/__init__.py
   FLASK_ENV: development
   APP_SETTINGS: project.config.DevelopmentConfig
@@ -25,6 +25,11 @@ before_install:
   - python --version
 
 install:
+  # try to move under a directory
+  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_build.sh;
+      ./.travis_build.sh;
+    fi
   - pip install -r requirements.txt
 
 before_script:
@@ -47,12 +52,6 @@ after_success:
       python -m codecov;
     fi
   - pkill gunicorn
-  - sudo systemctl stop postgresql
-  # try to move under a directory
-  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_build.sh;
-      ./.travis_build.sh;
-    fi
 
 #jobs:
 #  include:
