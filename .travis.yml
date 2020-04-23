@@ -47,7 +47,7 @@ after_success:
       python -m codecov;
     fi
   - pkill gunicorn
-  - systemctl stop postgresql@10-main
+  - systemctl stop postgresql
   # try to move under a directory
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_build.sh;
