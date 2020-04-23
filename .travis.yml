@@ -1,6 +1,6 @@
 dist: bionic
 os: linux
-language: shell
+language: python
 services:
   - docker
   - postgres
@@ -27,8 +27,8 @@ stages:
     # Run on every pull request against develop
     # Run on push against develop
 
-  #- name: Docker Compose Tests
-  #  if: type != api AND branch != master
+  - name: Docker Compose Tests
+    if: type != api AND branch = a1b2c3d4f5
     # Run on every pull request against develop
     # Run on push against develop
 
