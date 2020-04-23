@@ -43,13 +43,15 @@ script:
   - python -m isort project/**/*.py --check-only
 
 after_success:
-  - python -m coveralls
-  - python -m codecov
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      python -m coveralls;
+      python -m codecov;
+    fi
 
-jobs:
-  include:
-    - stage: code-coverage
-      python: "3.8"
-      script: |
-        python -m coveralls;
-        python -m codecov;
+#jobs:
+#  include:
+#    - stage: code-coverage
+#      python: "3.8"
+#      script: |
+#        python -m coveralls;
+#        python -m codecov;
