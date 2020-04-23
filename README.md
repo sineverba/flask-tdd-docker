@@ -70,10 +70,12 @@ $ export FLASK_APP=project/__init__.py
 $ export FLASK_ENV=development
 $ export APP_SETTINGS=project.config.DevelopmentConfig
 $ export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/users
+$ export DATABASE_TEST_URL=postgresql://postgres:postgres@localhost:5432/users
 $ flask shell
 $ python manage.py recreate_db
-$ python manage.py seed_db
-$ python manage.py run -h 0.0.0.0
+$ gunicorn -b 0.0.0.0:5000 manage:app --daemon
+$ pkill gunicorn
+
 ``` 
 
 ---------------------------------------------------------------

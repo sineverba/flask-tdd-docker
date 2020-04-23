@@ -3,6 +3,7 @@ os: linux
 language: shell
 services:
   - docker
+  - postgres
 branches:
   only:
     - master
@@ -21,8 +22,13 @@ env:
 conditions: v1
 
 stages:
-  - name: Docker Compose Tests
+  - name: Local Tests
     if: type != api AND branch != master
+    # Run on every pull request against develop
+    # Run on push against develop
+
+  #- name: Docker Compose Tests
+  #  if: type != api AND branch != master
     # Run on every pull request against develop
     # Run on push against develop
 
@@ -37,6 +43,27 @@ stages:
 
 jobs:
   include:
+
+    - stage: Local Tests
+      install: |
+        source env/bin/activate;
+        pip install -r requirements.txt;
+        export FLASK_APP=project/__init__.py;
+        export FLASK_ENV=development;
+        export APP_SETTINGS=project.config.DevelopmentConfig;
+        export DATABASE_TEST_URL=postgresql://postgres@127.0.0.1:5432/users;
+        gunicorn -b 0.0.0.0:5000 manage:app --daemon;
+      before_script: |
+        psql -c "CREATE DATABASE users;" -U postgres;
+      script: |
+        python -m pytest "project/tests" --cov="project";
+        python -m black project;
+        python -m flake8 project;
+        python -m isort project/**/*.py --check-only;
+      after_success: |
+        python -m coveralls;
+        python -m codecov;
+
     - stage: Docker Compose Tests
       before_install: |
         sudo rm /usr/local/bin/docker-compose;
