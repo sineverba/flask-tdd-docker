@@ -1,6 +1,10 @@
 dist: bionic
 os: linux
 language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
 services:
   - docker
   - postgresql
@@ -47,7 +51,7 @@ jobs:
     - stage: Local Tests
       before_install:
         - python --version
-      install: |
+      install:
         source env/bin/activate;
         pip install -r requirements.txt;
         export FLASK_APP=project/__init__.py;
