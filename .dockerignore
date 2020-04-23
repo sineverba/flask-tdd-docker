@@ -6,3 +6,4 @@ env
 htmlcov/
 coverage.xml
 .pytest_cache
+.travis_scripts/
