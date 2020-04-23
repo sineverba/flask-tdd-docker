@@ -20,7 +20,6 @@ before_install:
   - python --version
 
 install:
-  # reorganize database
   # try to move under a directory
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_build.sh;
@@ -33,6 +32,10 @@ before_script:
   - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
 script:
+  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_test.sh;
+      ./.travis_test.sh;
+    fi
   - python -m pytest "project/tests" --cov="project"
   - python -m black project
   - python -m flake8 project
