@@ -9,7 +9,8 @@ docker run -d \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=users \
-  -p 54321:5432 \
+  -p 54321:54321 \
+  --expose 54321
   --network=test-net \
   postgres:12-alpine
 
