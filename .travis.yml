@@ -20,7 +20,7 @@ before_install:
   - python --version
 
 install:
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ ($TRAVIS_BRANCH == "master" || $TRAVIS_TAG != "") && $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_build.sh;
       ./.travis_scripts/.travis_build.sh;
     fi
