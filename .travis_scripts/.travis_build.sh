@@ -4,6 +4,8 @@ docker build --tag ${HEROKU_REGISTRY_IMAGE} --file ./Dockerfile.prod "."
 
 docker network create -d bridge test-net
 
+# Do not bind port, otherwise conflict with Travis postgresql istance
+# -p 5432:5432 \
 docker run -d \
   --name db \
   -e POSTGRES_USER=postgres \

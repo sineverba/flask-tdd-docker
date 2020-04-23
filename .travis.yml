@@ -2,8 +2,8 @@ os: linux
 dist: bionic
 language: python
 python:
-  #- "3.6"
-  #- "3.7"
+  - "3.6"
+  - "3.7"
   - "3.8"
 services:
   - postgresql
@@ -20,7 +20,6 @@ before_install:
   - python --version
 
 install:
-  # try to move under a directory
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_build.sh;
       ./.travis_scripts/.travis_build.sh;
@@ -35,6 +34,18 @@ script:
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_test.sh;
       ./.travis_scripts/.travis_test.sh;
+    fi
+  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/.travis_black.sh;
+      ./.travis_scripts/.travis_black.sh;
+    fi
+  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/.travis_flake8.sh;
+      ./.travis_scripts/.travis_flake8.sh;
+    fi
+  - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/.travis_isort.sh;
+      ./.travis_scripts/.travis_isort.sh;
     fi
   #- python -m pytest "project/tests" --cov="project"
   #- python -m black project
