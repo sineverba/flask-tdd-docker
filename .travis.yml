@@ -46,6 +46,11 @@ after_success:
       python -m coveralls;
       python -m codecov;
     fi
+  # try to move under a directory
+  - if [[ $TRAVIS_BRANCH == "develop" ]]; then
+      chmod +x ./.travis_build.sh;
+      ./.travis_build.sh
+    fi
 
 #jobs:
 #  include:
