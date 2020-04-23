@@ -2,8 +2,8 @@ os: linux
 dist: bionic
 language: python
 python:
-  #- "3.6"
-  #- "3.7"
+  - "3.6"
+  - "3.7"
   - "3.8"
 services:
   - docker
@@ -60,7 +60,7 @@ script:
 after_success:
   # python --version
   # - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
       chmod +x ./.travis_scripts/.travis_deploy.sh;
       ./.travis_scripts/.travis_deploy.sh;
     fi
