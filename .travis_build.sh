@@ -6,8 +6,8 @@ docker network create -d bridge test-net
 
 docker run -d \
   --name db \
-  -e POSTGRES_USER=user \
-  -e POSTGRES_PASSWORD=user \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=users \
   -p 54321:5432 \
   --network=test-net \
@@ -16,7 +16,7 @@ docker run -d \
 docker run -d \
   --name app \
   -e "PORT=8765" \
-  -e "DATABASE_TEST_URL=postgresql://user:user@db:54321/users" \
+  -e "DATABASE_TEST_URL=postgresql://postgres:postgres@db:54321/users" \
   -p 5002:8765 \
   --network=test-net \
   $HEROKU_REGISTRY_IMAGE;
