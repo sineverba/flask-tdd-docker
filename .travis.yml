@@ -7,7 +7,7 @@ python:
   - "3.8"
 services:
   - postgresql
-  
+
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
@@ -16,7 +16,11 @@ env:
   DATABASE_TEST_NAME: users
   DATABASE_TEST_HOST: db
   DATABASE_TEST_PORT: 5432
-  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
+  #DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
+  DATABASE_TEST_URL: postgresql://postgres@127.0.0.1:5432/users
+  FLASK_APP: project/__init__.py
+  FLASK_ENV: development
+  APP_SETTINGS: project.config.DevelopmentConfig
 
 before_install:
   - python --version
@@ -25,10 +29,10 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - export FLASK_APP=project/__init__.py
-  - export FLASK_ENV=development
-  - export APP_SETTINGS=project.config.DevelopmentConfig
-  - export DATABASE_TEST_URL=postgresql://postgres@127.0.0.1:5432/users
+  #- export FLASK_APP=project/__init__.py
+  #- export FLASK_ENV=development
+  #- export APP_SETTINGS=project.config.DevelopmentConfig
+  #- export DATABASE_TEST_URL=postgresql://postgres@127.0.0.1:5432/users
   - psql -c "CREATE DATABASE users;" -U postgres
   - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
