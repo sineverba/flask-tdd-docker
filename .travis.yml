@@ -2,11 +2,11 @@ os: linux
 dist: bionic
 language: python
 python:
-  - "3.6"
-  - "3.7"
+  #- "3.6"
+  #- "3.7"
   - "3.8"
 services:
-  - postgresql
+  #- postgresql
 
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
@@ -25,30 +25,30 @@ install:
       chmod +x ./.travis_build.sh;
       ./.travis_build.sh;
     fi
-  - pip install -r requirements.txt
+  #- pip install -r requirements.txt
 
 before_script:
-  - psql -c "CREATE DATABASE users;" -U postgres
-  - gunicorn -b 0.0.0.0:5000 manage:app --daemon
+  #- psql -c "CREATE DATABASE users;" -U postgres
+  #- gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
 script:
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_test.sh;
       ./.travis_test.sh;
     fi
-  - python -m pytest "project/tests" --cov="project"
-  - python -m black project
-  - python -m flake8 project
-  - python -m isort project/**/*.py --check-only
+  #- python -m pytest "project/tests" --cov="project"
+  #- python -m black project
+  #- python -m flake8 project
+  #- python -m isort project/**/*.py --check-only
 
 after_success:
   # python --version
   # - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      python -m coveralls;
-      python -m codecov;
-    fi
-  - pkill gunicorn
+  #- if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #    python -m coveralls;
+  #    python -m codecov;
+  #  fi
+  #- pkill gunicorn
 
 #jobs:
 #  include:
