@@ -49,7 +49,7 @@ after_success:
   # try to move under a directory
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_build.sh;
-      ./.travis_build.sh
+      ./.travis_build.sh;
     fi
 
 #jobs:
