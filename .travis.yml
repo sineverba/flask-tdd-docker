@@ -16,8 +16,7 @@ env:
   DATABASE_TEST_NAME: users
   DATABASE_TEST_HOST: db
   DATABASE_TEST_PORT: 5432
-  #DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
-  DATABASE_TEST_URL: postgresql://postgres@127.0.0.1:5432/users
+  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
   FLASK_APP: project/__init__.py
   FLASK_ENV: development
   APP_SETTINGS: project.config.DevelopmentConfig
@@ -29,10 +28,8 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  #- export FLASK_APP=project/__init__.py
-  #- export FLASK_ENV=development
-  #- export APP_SETTINGS=project.config.DevelopmentConfig
-  #- export DATABASE_TEST_URL=postgresql://postgres@127.0.0.1:5432/users
+  # Swap to only one DATABASE_TEST_URL
+  - export DATABASE_TEST_URL=postgresql://$DATABASE_TEST_USER@127.0.0.1:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
   - psql -c "CREATE DATABASE users;" -U postgres
   - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
@@ -43,6 +40,8 @@ script:
   - python -m isort project/**/*.py --check-only
 
 after_success:
+  # python --version
+  # - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
   - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       python -m coveralls;
       python -m codecov;
