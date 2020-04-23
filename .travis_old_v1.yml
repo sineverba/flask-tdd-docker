@@ -1,0 +1,152 @@
+dist: bionic
+os: linux
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+services:
+  - docker
+  - postgresql
+branches:
+  only:
+    - master
+    - develop
+env:
+  DOCKER_COMPOSE_VERSION: 1.25.4
+  HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
+  DATABASE_TEST_USER: postgres
+  DATABASE_TEST_PASSWORD: postgres
+  DATABASE_TEST_NAME: users
+  DATABASE_TEST_HOST: db
+  DATABASE_TEST_PORT: 5432
+  DATABASE_TEST_URL: postgresql://$DATABASE_TEST_USER:$DATABASE_TEST_PASSWORD@$DATABASE_TEST_HOST:$DATABASE_TEST_PORT/$DATABASE_TEST_NAME
+
+# the following line is needed to enable the TravisCI build conditions
+conditions: v1
+
+stages:
+  - name: Local Tests
+    if: type != api AND branch != master
+    # Run on every pull request against develop
+    # Run on push against develop
+
+  - name: Docker Compose Tests
+    if: type != api AND branch = a1b2c3d4f5
+    # Run on every pull request against develop
+    # Run on push against develop
+
+  - name: Docker Image Tests
+    if: (type = pull_request OR type = cron) AND branch = master
+    # Run on every pull request against master
+    # Run on CRON tests
+
+  - name: Deploy to Heroku
+    if: (type != pull_request AND type != cron) AND branch = master
+    # Run after merging into master. No test
+
+jobs:
+  include:
+
+    - stage: Local Tests
+      before_install:
+        - python --version
+      install:
+        source env/bin/activate;
+        pip install -r requirements.txt;
+        export FLASK_APP=project/__init__.py;
+        export FLASK_ENV=development;
+        export APP_SETTINGS=project.config.DevelopmentConfig;
+        export DATABASE_TEST_URL=postgresql://postgres@127.0.0.1:5432/users;
+        gunicorn -b 0.0.0.0:5000 manage:app --daemon;
+      before_script: |
+        psql -c "CREATE DATABASE users;" -U postgres;
+      script: |
+        python -m pytest "project/tests" --cov="project";
+        python -m black project;
+        python -m flake8 project;
+        python -m isort project/**/*.py --check-only;
+      after_success: |
+        python -m coveralls;
+        python -m codecov;
+
+    - stage: Docker Compose Tests
+      before_install: |
+        sudo rm /usr/local/bin/docker-compose;
+        curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose;
+        chmod +x docker-compose;
+        sudo mv docker-compose /usr/local/bin;
+      before_script: |
+        docker-compose up -d --build;
+        docker-compose exec users apk add git;
+      script: |
+        docker-compose exec users python -m pytest "project/tests" --cov="project";
+        docker-compose exec users black project;
+        docker-compose exec users flake8 project;
+        docker-compose exec users isort project/**/*.py --check-only;
+      after_success: |
+        docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users coveralls;
+        docker-compose exec -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST users codecov --token=${CODECOV_TOKEN};
+        docker-compose stop;
+        docker-compose down -v;
+
+    - stage: Docker Image Tests
+      before_script: |
+        docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
+        docker network create -d bridge test-net;
+        docker run -d \
+          --name db \
+          -e POSTGRES_USER=$DATABASE_TEST_USER \
+          -e POSTGRES_PASSWORD=$DATABASE_TEST_PASSWORD \
+          -e POSTGRES_DB=$DATABASE_TEST_NAME \
+          -p $DATABASE_TEST_PORT:$DATABASE_TEST_PORT \
+          --network=test-net \
+          postgres:12-alpine;
+        docker run -d \
+          --name app \
+          -e "PORT=8765" \
+          -e "DATABASE_TEST_URL=$DATABASE_TEST_URL" \
+          -p 5002:8765 \
+          --network=test-net \
+          $HEROKU_REGISTRY_IMAGE;
+      script: |
+        docker exec app python -m pytest "project/tests";
+        docker exec app flake8 project;
+        docker exec app black project --check;
+        docker exec app isort project/**/*.py --check-only;
+      after_success: |
+        docker container stop $(docker container ls -aq);
+
+    - stage: Deploy to Heroku
+      before_script: |
+        docker build --tag $HEROKU_REGISTRY_IMAGE --file ./Dockerfile.prod ".";
+        docker network create -d bridge test-net;
+        docker run -d \
+          --name db \
+          -e POSTGRES_USER=$DATABASE_TEST_USER \
+          -e POSTGRES_PASSWORD=$DATABASE_TEST_PASSWORD \
+          -e POSTGRES_DB=$DATABASE_TEST_NAME \
+          -p 5432:5432 \
+          --network=test-net \
+          postgres:12-alpine;
+        docker run -d \
+          --name app \
+          -e "PORT=8765" \
+          -e "DATABASE_TEST_URL=$DATABASE_TEST_URL" \
+          -e TRAVIS \
+          -e TRAVIS_JOB_ID \
+          -e TRAVIS_BRANCH \
+          -e TRAVIS_PULL_REQUEST \
+          -p 5002:8765 \
+          --network=test-net \
+          $HEROKU_REGISTRY_IMAGE;
+      script: |
+        docker exec app python -m pytest "project/tests";
+        docker exec app flake8 project;
+        docker exec app black project --check;
+        docker exec app isort project/**/*.py --check-only;
+      after_success: |
+        docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com;
+        docker push $HEROKU_REGISTRY_IMAGE;
+        chmod +x ./release.sh;
+        ./release.sh;
