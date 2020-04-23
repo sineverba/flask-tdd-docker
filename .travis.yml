@@ -6,7 +6,7 @@ python:
   #- "3.7"
   - "3.8"
 services:
-  #- postgresql
+  - postgresql
 
 env:
   DOCKER_COMPOSE_VERSION: 1.25.4
