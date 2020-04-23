@@ -2,8 +2,8 @@ os: linux
 dist: bionic
 language: python
 python:
-  - "3.6"
-  - "3.7"
+  #- "3.6"
+  #- "3.7"
   - "3.8"
 services:
   - docker
@@ -20,7 +20,8 @@ before_install:
   - python --version
 
 install:
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_build.sh;
       ./.travis_scripts/.travis_build.sh;
     fi
@@ -31,19 +32,23 @@ before_script:
   - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
 script:
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_test.sh;
       ./.travis_scripts/.travis_test.sh;
     fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_black.sh;
       ./.travis_scripts/.travis_black.sh;
     fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_flake8.sh;
       ./.travis_scripts/.travis_flake8.sh;
     fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       chmod +x ./.travis_scripts/.travis_isort.sh;
       ./.travis_scripts/.travis_isort.sh;
     fi
@@ -56,15 +61,11 @@ after_success:
   # python --version
   # - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
   - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/.travis_deploy.sh;
+      ./.travis_scripts/.travis_deploy.sh;
+    fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       python -m coveralls;
       python -m codecov;
+      pkill gunicorn;
     fi
-  # - pkill gunicorn
-
-#jobs:
-#  include:
-#    - stage: code-coverage
-#      python: "3.8"
-#      script: |
-#        python -m coveralls;
-#        python -m codecov;
