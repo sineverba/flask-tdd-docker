@@ -22,8 +22,8 @@ before_install:
 install:
   # try to move under a directory
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_build.sh;
-      ./.travis_build.sh;
+      chmod +x ./.travis_scripts/.travis_build.sh;
+      ./.travis_scripts/.travis_build.sh;
     fi
   #- pip install -r requirements.txt
 
@@ -33,8 +33,8 @@ before_script:
 
 script:
   - if [[ $TRAVIS_BRANCH == "develop" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_test.sh;
-      ./.travis_test.sh;
+      chmod +x ./.travis_scripts/.travis_test.sh;
+      ./.travis_scripts/.travis_test.sh;
     fi
   #- python -m pytest "project/tests" --cov="project"
   #- python -m black project
