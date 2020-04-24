@@ -31,29 +31,29 @@ before_script:
   - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
 script:
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/.travis_test.sh;
-      ./.travis_scripts/.travis_test.sh;
-    fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/.travis_black.sh;
-      ./.travis_scripts/.travis_black.sh;
-    fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/.travis_flake8.sh;
-      ./.travis_scripts/.travis_flake8.sh;
-    fi
-  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/.travis_isort.sh;
-      ./.travis_scripts/.travis_isort.sh;
-    fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #    chmod +x ./.travis_scripts/.travis_test.sh;
+  #    ./.travis_scripts/.travis_test.sh;
+  #  fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #    chmod +x ./.travis_scripts/.travis_black.sh;
+  #    ./.travis_scripts/.travis_black.sh;
+  #  fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #    chmod +x ./.travis_scripts/.travis_flake8.sh;
+  #    ./.travis_scripts/.travis_flake8.sh;
+  #  fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+  #    chmod +x ./.travis_scripts/.travis_isort.sh;
+  #    ./.travis_scripts/.travis_isort.sh;
+  #  fi
   - python -m pytest "project/tests" --cov="project"
   - python -m black project
   - python -m flake8 project
   - python -m isort project/**/*.py --check-only
 
 after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
       chmod +x ./.travis_scripts/.travis_deploy.sh;
       ./.travis_scripts/.travis_deploy.sh;
     fi
