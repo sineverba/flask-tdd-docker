@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec app isort project/**/*.py --check-only;
+docker exec app /home/myuser/.local/bin/isort project/**/*.py --check-only;

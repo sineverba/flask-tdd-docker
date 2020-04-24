@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec app black project --check;
+docker exec app /home/myuser/.local/bin/black project --check;
