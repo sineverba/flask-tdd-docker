@@ -7,7 +7,7 @@ api = Api(ping_blueprint)
 
 class Ping(Resource):
     def get(self):
-        return {"status": "success", "message": "pong! V 0.3.0 2020-04-20 06.31"}
+        return {"status": "success", "message": "pong! V 0.3.0 2020-04-20 07.56"}
 
 
 api.add_resource(Ping, "/ping")
