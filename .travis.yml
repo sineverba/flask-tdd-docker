@@ -53,7 +53,7 @@ script:
   - python -m isort project/**/*.py --check-only
 
 after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]]; then
       chmod +x ./.travis_scripts/.travis_deploy.sh;
       ./.travis_scripts/.travis_deploy.sh;
     fi
