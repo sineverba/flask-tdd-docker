@@ -1,8 +1,8 @@
 #!/bin/sh
 
-docker build --tag ${HEROKU_REGISTRY_IMAGE} --file ./Dockerfile.prod "."
+docker build --tag ${HEROKU_REGISTRY_IMAGE} --file ./Dockerfile.prod --build-arg SECRET_KEY="$SECRET_KEY" ".";
 
-docker network create -d bridge test-net
+docker network create -d bridge test-net;
 
 # Do not bind port, otherwise conflict with Travis postgresql istance
 # -p 5432:5432 \
