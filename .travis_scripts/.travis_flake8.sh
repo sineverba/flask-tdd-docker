@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec app flake8 project;
+docker exec app /home/myuser/.local/bin/flake8 project;
