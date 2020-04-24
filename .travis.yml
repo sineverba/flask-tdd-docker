@@ -27,7 +27,7 @@ install:
   - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
     chmod +x ./.travis_scripts/.travis_install_dev.sh;
     ./.travis_scripts/.travis_install_dev.sh;
-  fi
+    fi
   - pip install -r requirements-dev.txt
 
 before_script:
