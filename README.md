@@ -22,7 +22,14 @@ $ sudo apt install python3.8 python3-pip python3-setuptools python3.8-venv -y
 
 ``` bash
 
-$ docker-compose up -d
+$ docker-compose up -d --build
+$ docker-compose exec users python manage.py recreate_db
+$ docker-compose exec users python manage.py seed_db
+
+$ docker-compose exec users python -m pytest "project/tests"
+$ docker-compose exec users flake8 project
+$ docker-compose exec users black project
+$ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 
 ```
 
@@ -65,7 +72,7 @@ $ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 
 $ docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 postgres:12-alpine
 $ source env/bin/activate
-$ pip install -r requirements.txt
+$ pip install -r requirements-dev.txt
 $ export FLASK_APP=project/__init__.py
 $ export FLASK_ENV=development
 $ export APP_SETTINGS=project.config.DevelopmentConfig
