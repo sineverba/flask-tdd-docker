@@ -21,12 +21,12 @@ before_install:
 
 install:
   - if [[ ($TRAVIS_BRANCH == "master" || $TRAVIS_TAG != "") && $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/.travis_build.sh;
-      ./.travis_scripts/.travis_build.sh;
+      chmod +x ./.travis_scripts/travis_build.sh;
+      ./.travis_scripts/travis_build.sh;
     fi
   - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-    chmod +x ./.travis_scripts/.travis_install_dev.sh;
-    ./.travis_scripts/.travis_install_dev.sh;
+    chmod +x ./.travis_scripts/travis_install_dev.sh;
+    ./.travis_scripts/travis_install_dev.sh;
     fi
   - pip install -r requirements-dev.txt
 
@@ -37,8 +37,8 @@ before_script:
 script:
   - |
     if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
-      chmod +x ./.travis_scripts/travis_test_new.sh;
-      ./.travis_scripts/travis_test_new.sh;
+      chmod +x ./.travis_scripts/travis_test.sh;
+      ./.travis_scripts/travis_test.sh;
     fi
   - python -m pytest "project/tests" --cov="project"
   - python -m black project
@@ -47,8 +47,8 @@ script:
 
 after_success:
   - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]]; then
-      chmod +x ./.travis_scripts/.travis_deploy.sh;
-      ./.travis_scripts/.travis_deploy.sh;
+      chmod +x ./.travis_scripts/travis_deploy.sh;
+      ./.travis_scripts/travis_deploy.sh;
     fi
   - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
       python -m coveralls;
