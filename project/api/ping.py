@@ -9,7 +9,7 @@ class Ping(Resource):
     def get(self):
         return {
             "status": "success",
-            "message": "pong! V 0.3.0 2020-04-20 08.38 - Add Secret Key",
+            "message": "pong! V 0.5.0 - 2020-04-26 11.18 - Add CORS",
         }
 
 
