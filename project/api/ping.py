@@ -1,16 +1,14 @@
-from flask import Blueprint
-from flask_restx import Api, Resource
+from flask_restx import Namespace, Resource
 
-ping_blueprint = Blueprint("ping", __name__)
-api = Api(ping_blueprint)
+ping_namespace = Namespace("ping")
 
 
 class Ping(Resource):
     def get(self):
         return {
             "status": "success",
-            "message": "pong! V 0.5.0 - 2020-04-26 11.18 - Add CORS",
+            "message": "pong! V 0.6.0 - 2020-04-26 15.57 - Add Namespace",
         }
 
 
-api.add_resource(Ping, "/ping")
+ping_namespace.add_resource(Ping, "")

@@ -22,12 +22,9 @@ def create_app(script_info=None):
     # set up extensions
     db.init_app(app)
 
-    # register blueprints
-    from project.api.ping import ping_blueprint
-    from project.api.users import users_blueprint
+    from project.api import api
 
-    app.register_blueprint(ping_blueprint)
-    app.register_blueprint(users_blueprint)
+    api.init_app(app)
 
     # shell context for flask cli
     @app.shell_context_processor
