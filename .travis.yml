@@ -1,8 +1,6 @@
 os: linux
 dist: bionic
-language: python
-python:
-  - "3.8"
+language: shell
 
 env:
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
@@ -15,4 +13,5 @@ install:
   - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 script:
+  - heroku run python manage.py db migrate
   - echo "OK"
