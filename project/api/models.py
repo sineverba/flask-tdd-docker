@@ -10,8 +10,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False)
+    address = db.Column(db.String(128), nullable=True)
     active = db.Column(db.Boolean(), default=True, nullable=False)
-    deletenext = db.Column(db.Boolean(), default=True, nullable=True)
     created_date = db.Column(db.DateTime, default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, default=func.now(), nullable=True)
 
