@@ -71,6 +71,7 @@ $ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 ``` bash
 
 $ docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 postgres:12-alpine
+$ python3.8 -m venv env # for first time
 $ source env/bin/activate
 $ pip install -r requirements-dev.txt
 $ export FLASK_APP=project/__init__.py
@@ -80,10 +81,14 @@ $ export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/users
 $ export DATABASE_TEST_URL=postgresql://postgres:postgres@localhost:5432/users
 $ flask shell
 $ python manage.py recreate_db
-$ gunicorn -b 0.0.0.0:5000 manage:app --daemon
-$ pkill gunicorn
+$ python -m pytest "project/tests" --cov="project"
+$ python manage.py run -h 0.0.0.0
+# $ gunicorn -b 0.0.0.0:5000 manage:app --daemon to use in background
+# $ pkill gunicorn
 
 ``` 
+
+
 
 ---------------------------------------------------------------
 
