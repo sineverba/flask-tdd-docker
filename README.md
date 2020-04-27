@@ -102,6 +102,13 @@ $ python manage.py db migrate
 $ python manage.py db upgrade
 ```
 
+#### Migrate on Heroku
+
+``` bash
+$ heroku run python manage.py db migrate
+$ heroku run python manage.py db upgrade
+```
+
 
 
 ---------------------------------------------------------------
