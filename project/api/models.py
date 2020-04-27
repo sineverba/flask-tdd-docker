@@ -12,6 +12,7 @@ class User(db.Model):
     email = db.Column(db.String(128), nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
     created_date = db.Column(db.DateTime, default=func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, default=func.now(), nullable=True)
 
     def __init__(self, username, email):
         self.username = username
