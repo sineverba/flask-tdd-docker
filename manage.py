@@ -20,5 +20,12 @@ def seed_db():
     db.session.add(User(username='username_2', email="info@example.com"))
     db.session.commit()
 
+@cli.command('db')
+def migrate():
+    migrate
+
+def upgrade():
+    upgrade
+
 if __name__ == '__main__':
     cli()

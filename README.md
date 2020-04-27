@@ -88,11 +88,18 @@ $ python manage.py run -h 0.0.0.0
 
 ``` 
 
-### Run migrations
+### Run migrations (during development)
 
 ``` bash
 $ flask db migrate -m "Initial migration."
 $ flask db upgrade
+```
+
+#### Or
+
+``` bash
+$ python manage.py db migrate
+$ python manage.py db upgrade
 ```
 
 
