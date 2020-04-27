@@ -1,6 +1,8 @@
 # project/api/crud.py
 
 
+from sqlalchemy.sql import func
+
 from project import db
 from project.api.models import User
 
@@ -28,6 +30,7 @@ def add_user(username, email):
 def update_user(user, username, email):
     user.username = username
     user.email = email
+    user.updated_at = func.now()
     db.session.commit()
     return user
 
