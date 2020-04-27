@@ -1,9 +1,10 @@
 # project/api/crud.py
 
 
+from sqlalchemy.sql import func
+
 from project import db
 from project.api.models import User
-from sqlalchemy.sql import func
 
 
 def get_all_users():
