@@ -13,5 +13,5 @@ install:
   - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 script:
-  - heroku run python manage.py db migrate
+  - heroku run python manage.py db migrate --app $HEROKU_APP_NAME
   - echo "OK"
