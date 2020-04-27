@@ -1,6 +1,13 @@
 os: linux
 dist: bionic
-language: shell
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+services:
+  - docker
+  - postgresql
 
 env:
   HEROKU_REGISTRY_IMAGE: registry.heroku.com/$HEROKU_APP_NAME/web
@@ -9,10 +16,42 @@ env:
   FLASK_ENV: development
   APP_SETTINGS: project.config.DevelopmentConfig
 
+before_install:
+  - python --version
+
 install:
-  - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+  - if [[ ($TRAVIS_BRANCH == "master" || $TRAVIS_TAG != "") && $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/travis_build.sh;
+      ./.travis_scripts/travis_build.sh;
+    fi
+  - if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+    chmod +x ./.travis_scripts/travis_install_dev.sh;
+    ./.travis_scripts/travis_install_dev.sh;
+    fi
+  - pip install -r requirements-dev.txt
+
+before_script:
+  - psql -c "CREATE DATABASE users;" -U postgres
+  - gunicorn -b 0.0.0.0:5000 manage:app --daemon
 
 script:
-  - heroku run python manage.py db migrate --app $HEROKU_APP_NAME
-  - heroku run python manage.py db upgrade --app $HEROKU_APP_NAME
-  - echo "OK"
+  - |
+    if [[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      chmod +x ./.travis_scripts/travis_test.sh;
+      ./.travis_scripts/travis_test.sh;
+    fi
+  - python -m pytest "project/tests" --cov="project"
+  - python -m black project
+  - python -m flake8 project
+  - python -m isort project/**/*.py --check-only
+
+after_success:
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] && [[ $TRAVIS_TAG != "" ]]; then
+      curl https://cli-assets.heroku.com/install-ubuntu.sh | sh;
+      chmod +x ./.travis_scripts/travis_deploy.sh;
+      ./.travis_scripts/travis_deploy.sh;
+    fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.8" ]]; then
+      python -m coveralls;
+      python -m codecov;
+    fi
