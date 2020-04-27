@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 # instantiate the app
 db = SQLAlchemy()
@@ -25,6 +26,9 @@ def create_app(script_info=None):
     from project.api import api
 
     api.init_app(app)
+
+    # migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # shell context for flask cli
     @app.shell_context_processor
