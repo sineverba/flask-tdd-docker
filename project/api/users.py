@@ -20,7 +20,7 @@ user = users_namespace.model(
         "email": fields.String(required=True),
         "created_date": fields.DateTime,
         "updated_at": fields.DateTime,
-        "address": fields.String
+        "address": fields.String,
     },
 )
 
