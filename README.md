@@ -68,9 +68,13 @@ $ docker-compose exec users /bin/sh -c "isort project/**/*.py"
 
 ## Start app from local
 
+### TIP
+Can copy `variables.rc` in ~/.variables.rc and type `source .variables.rc`
+
 ``` bash
 
 $ docker run -d --name db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=users -p 5432:5432 postgres:12-alpine
+# From next time: docker container start db
 $ python3.8 -m venv env # for first time
 $ source env/bin/activate
 $ pip install -r requirements-dev.txt
@@ -98,8 +102,8 @@ $ flask db upgrade
 #### Or
 
 ``` bash
-$ python manage.py db migrate
-$ python manage.py db upgrade
+$ docker-compose exec users python manage.py db migrate
+$ docker-compose exec users python manage.py db upgrade
 ```
 
 #### Migrate on Heroku
