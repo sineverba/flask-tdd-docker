@@ -4,8 +4,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-# instantiate the app
+# instantiate the dependencies
 db = SQLAlchemy()
+cors = CORS()
 
 
 def create_app(script_info=None):
@@ -13,15 +14,13 @@ def create_app(script_info=None):
     # instantiate the app
     app = Flask(__name__)
 
-    # Add CORS
-    CORS(app)
-
     # set config
     app_settings = os.getenv("APP_SETTINGS")
     app.config.from_object(app_settings)
 
     # set up extensions
     db.init_app(app)
+    cors.init_app(app, resources={r"*": {"origins": "*"}})
 
     from project.api import api
 
